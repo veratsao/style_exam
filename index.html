@@ -438,7 +438,7 @@
         <p class="subtitle">聽聲音、看中文，拼出正確單字！</p>
         
         <div class="mode-container">
-            <div class="mode-title">🎯 先選擇遊玩模式</div>
+            <div class="mode-title">🎯 選擇遊玩模式</div>
             <div class="mode-grid">
                 <button id="btn-mode-spelling" class="btn-mode selected" onclick="selectMode('spelling')">看中文拼字 🇹🇼</button>
                 <button id="btn-mode-cloze" class="btn-mode" onclick="selectMode('cloze')">聽力克漏字 🇬🇧</button>
@@ -486,6 +486,7 @@
         <!-- 語音朗讀與重填按鈕 -->
         <div class="control-row">
             <button id="btn-repeat-sentence" class="btn-control btn-repeat-sentence" onclick="repeatCurrentSentenceAudio()">聽句子 🔊</button>
+            <button id="btn-repeat-word" class="btn-control btn-repeat-word" onclick="repeatCurrentWordAudio()">聽單字 🎵</button>
             <button class="btn-control btn-clear" onclick="clearAnswer()">重新填寫 ❌</button>
         </div>
 
@@ -1022,7 +1023,7 @@
                     endGame(false, true); // 傳入 (isTimeUp=false, isMaxErrors=true)
                 }, 2000);
             } else {
-                feedback.innerHTML = `<span class="text-danger">❌ 喔喔，不對唷！剩餘 ${3 - currentQuestionErrors} 次挑戰機會。</span>`;
+                feedback.innerHTML = `<span class="text-danger">❌ 喔喔，字母順序不對唷！剩餘 ${3 - currentQuestionErrors} 次挑戰機會。</span>`;
                 // 自動幫小朋友清空該題格子，便於重新輸入
                 setTimeout(() => {
                     if (currentQuestionErrors < 3 && !isTransitioning) {
@@ -1050,7 +1051,7 @@
             const completeSentence = sentenceTemplate.replace("_____", wordToFill);
             const utterance = new SpeechSynthesisUtterance(completeSentence);
             utterance.lang = 'en-US';
-            utterance.rate = 0.65; // 調慢句子速度 (原 0.85)，使聽力句子更清晰
+            utterance.rate = 0.70; // 調慢句子速度 (原 0.85)，使聽力句子更清晰
             window.speechSynthesis.speak(utterance);
         }
     }
