@@ -69,46 +69,7 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        .mode-container {
-            background: #FFF9E6;
-            border: 3px solid #FFEAA7;
-            border-radius: 20px;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-
-        .mode-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #D35400;
-            margin-bottom: 8px;
-        }
-
-        .mode-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .btn-mode {
-            background: white;
-            border: 2px solid #FFEAA7;
-            border-radius: 15px;
-            padding: 10px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #7F8C8D;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-mode.selected {
-            background: #74B9FF;
-            border-color: #74B9FF;
-            color: white;
-            box-shadow: 0 4px 8px rgba(116,185,255,0.3);
-        }
-
+        /* 關卡選擇鈕 */
         .level-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -228,27 +189,15 @@
             transition: width 0.3s;
         }
 
-        .prompt-box {
+        .chinese-prompt {
+            font-size: 2.8rem;
             font-weight: bold;
             color: #2C3E50;
             background: #F8EFBA;
             display: inline-block;
-            padding: 12px 25px;
+            padding: 5px 25px;
             border-radius: 20px;
             margin-bottom: 25px;
-            width: 100%;
-            line-height: 1.4;
-            word-wrap: break-word;
-            transition: font-size 0.2s;
-        }
-
-        .prompt-spelling {
-            font-size: 2.8rem;
-        }
-
-        .prompt-cloze {
-            font-size: 1.6rem;
-            text-align: center;
         }
 
         /* 填空格子 */
@@ -289,7 +238,6 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            flex-wrap: wrap;
         }
 
         .btn-control {
@@ -301,17 +249,9 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 3px 0 rgba(0,0,0,0.15);
-            transition: all 0.1s;
         }
-        
-        .btn-control:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 rgba(0,0,0,0.15);
-        }
-
         .btn-clear { background: #E74C3C; }
-        .btn-repeat-sentence { background: #27AE60; }
-        .btn-repeat-word { background: #3498DB; }
+        .btn-repeat-sound { background: #3498DB; }
 
         /* 糖果字母池 */
         .letter-pool {
@@ -382,7 +322,7 @@
             margin-bottom: 25px;
         }
 
-        /* 自訂覆蓋用提示對話框 */
+        /* 確認對話框 */
         .custom-dialog {
             display: none;
             position: fixed;
@@ -432,19 +372,10 @@
 <body>
 
 <div class="app-container">
-    <!-- 1. 主選單畫面 -->
     <div id="screen-menu" class="screen active">
         <h1>字母拼字大挑戰 🎈</h1>
         <p class="subtitle">聽聲音、看中文，拼出正確單字！</p>
         
-        <div class="mode-container">
-            <div class="mode-title">🎯 選擇遊玩模式</div>
-            <div class="mode-grid">
-                <button id="btn-mode-spelling" class="btn-mode selected" onclick="selectMode('spelling')">看中文拼字 🇹🇼</button>
-                <button id="btn-mode-cloze" class="btn-mode" onclick="selectMode('cloze')">聽力克漏字 🇬🇧</button>
-            </div>
-        </div>
-
         <div class="level-grid">
             <button class="btn-level selected" onclick="selectLevel(1)">Level 1</button>
             <button class="btn-level" onclick="selectLevel(2)">Level 1 ~ 2</button>
@@ -456,14 +387,12 @@
         <button class="btn-main" onclick="startGame()">開始拼字遊戲 ✨</button>
     </div>
 
-    <!-- 2. 遊戲進行畫面 -->
     <div id="screen-game" class="screen">
         <div class="game-header">
             <button class="btn-home-back" onclick="confirmReturnToMenu()">🏠 回首頁</button>
             <span id="question-number">第 1 / 15 題</span>
         </div>
 
-        <!-- 5分鐘倒數計時器 -->
         <div id="timer-box" class="timer-container">
             ⏱️ <span id="timer-display">05:00</span>
         </div>
@@ -477,26 +406,20 @@
             <span id="current-score">得分: 0</span>
         </div>
 
-        <!-- 提示文字框 (動態更替為中文或英文挖空句子) -->
-        <div id="prompt-box" class="prompt-box prompt-spelling">蘋果</div>
+        <div id="chinese-prompt" class="chinese-prompt">蘋果</div>
 
-        <!-- 填空格子列 -->
         <div id="slots" class="slots-container"></div>
 
-        <!-- 語音朗讀與重填按鈕 -->
         <div class="control-row">
-            <button id="btn-repeat-sentence" class="btn-control btn-repeat-sentence" onclick="repeatCurrentSentenceAudio()">聽句子 🔊</button>
-            <button id="btn-repeat-word" class="btn-control btn-repeat-word" onclick="repeatCurrentWordAudio()">聽單字 🎵</button>
+            <button class="btn-control btn-repeat-sound" onclick="repeatCurrentWordAudio()">再聽一次 🔊</button>
             <button class="btn-control btn-clear" onclick="clearAnswer()">重新填寫 ❌</button>
         </div>
 
-        <!-- 字母池 -->
         <div id="letter-pool" class="letter-pool"></div>
         
         <div id="feedback" class="feedback-message"></div>
     </div>
 
-    <!-- 3. 結束結算畫面 -->
     <div id="screen-result" class="screen">
         <h1 id="result-title">挑戰成功 🎉</h1>
         <div id="final-score" class="score-display">100</div>
@@ -511,7 +434,6 @@
     </div>
 </div>
 
-<!-- 4. 自訂確認離開提示框 -->
 <div id="confirm-dialog" class="custom-dialog">
     <div class="custom-dialog-box">
         <div class="dialog-title">確定要離開本次測驗嗎？</div>
@@ -524,253 +446,389 @@
 </div>
 
 <script>
+    // 內建完整單字資料庫
     const vocabData = {
         1: [
-            { w: "apple", ch: "蘋果" }, { w: "banana", ch: "香蕉" }, { w: "angry", ch: "生氣的" },
-            { w: "cat", ch: "貓" }, { w: "duck", ch: "鴨子" }, { w: "happy", ch: "快樂的" },
-            { w: "bear", ch: "熊" }, { w: "ball", ch: "球" }, { w: "bird", ch: "鳥" },
-            { w: "book", ch: "書本" }, { w: "frog", ch: "青蛙" }, { w: "lion", ch: "獅子" },
-            { w: "arm", ch: "手臂" }, { w: "bad", ch: "壞的" }, { w: "bag", ch: "袋子" },
-            { w: "baseball", ch: "棒球" }, { w: "basketball", ch: "籃球" }, { w: "bed", ch: "床" },
-            { w: "belt", ch: "皮帶" }, { w: "bicycle", ch: "腳踏車" }, { w: "big", ch: "大的" },
-            { w: "black", ch: "黑色的" }, { w: "blue", ch: "藍色的" }, { w: "boat", ch: "小船" },
-            { w: "bottle", ch: "瓶子" }, { w: "box", ch: "盒子" }, { w: "boy", ch: "男孩" },
-            { w: "brown", ch: "棕色的" }, { w: "bus", ch: "公車" }, { w: "cake", ch: "蛋糕" },
-            { w: "candy", ch: "糖果" }, { w: "car", ch: "汽車" }, { w: "chair", ch: "椅子" },
-            { w: "circle", ch: "圓圈" }, { w: "clock", ch: "時鐘" }, { w: "cold", ch: "冷的" },
-            { w: "cow", ch: "乳牛" }, { w: "cup", ch: "杯子" }, { w: "dad", ch: "爸爸" },
-            { w: "desk", ch: "書桌" }, { w: "dog", ch: "狗" }, { w: "door", ch: "門" },
-            { w: "egg", ch: "蛋" }, { w: "elephant", ch: "大象" }, { w: "fish", ch: "魚" },
-            { w: "girl", ch: "女孩" }, { w: "glass", ch: "玻璃杯" }, { w: "home", ch: "家" },
-            { w: "horse", ch: "馬" }, { w: "house", ch: "房子" }, { w: "juice", ch: "果汁" },
-            { w: "lemon", ch: "檸檬" }, { w: "monkey", ch: "猴子" }, { w: "mouse", ch: "老鼠" },
-            { w: "nose", ch: "鼻子" }, { w: "orange", ch: "橘子" }, { w: "panda", ch: "大熊貓" },
+            { w: "and", ch: "和、而且" }, { w: "angry", ch: "生氣的" }, { w: "apple", ch: "蘋果" },
+            { w: "arm", ch: "手臂" }, { w: "bad", ch: "壞的、差的" }, { w: "bag", ch: "袋子、包包" },
+            { w: "ball", ch: "球" }, { w: "banana", ch: "香蕉" }, { w: "baseball", ch: "棒球" },
+            { w: "basketball", ch: "籃球" }, { w: "be", ch: "是、存在" }, { w: "bear", ch: "熊" },
+            { w: "bed", ch: "床" }, { w: "belt", ch: "皮帶、腰帶" }, { w: "bicycle", ch: "腳踏車" },
+            { w: "big", ch: "大的" }, { w: "bird", ch: "鳥" }, { w: "black", ch: "黑色的" },
+            { w: "blouse", ch: "女裝短上衣、襯衫" }, { w: "blue", ch: "藍色的" }, { w: "boat", ch: "小船" },
+            { w: "book", ch: "書本" }, { w: "bottle", ch: "瓶子" }, { w: "box", ch: "盒子、箱子" },
+            { w: "boy", ch: "男孩" }, { w: "brown", ch: "咖啡色的、棕色的" }, { w: "bus", ch: "公車" },
+            { w: "bye", ch: "再見" }, { w: "cake", ch: "蛋糕" }, { w: "candy", ch: "糖果" },
+            { w: "car", ch: "汽車" }, { w: "cat", ch: "貓" }, { w: "chair", ch: "椅子" },
+            { w: "circle", ch: "圓圈" }, { w: "clock", ch: "時鐘" }, { w: "close", ch: "關閉" },
+            { w: "cold", ch: "冷的、感冒" }, { w: "color", ch: "顏色" }, { w: "come", ch: "來" },
+            { w: "cookie", ch: "餅乾" }, { w: "cow", ch: "乳牛" }, { w: "cup", ch: "杯子" },
+            { w: "dad", ch: "爸爸" }, { w: "desk", ch: "書桌" }, { w: "dog", ch: "狗" },
+            { w: "door", ch: "門" }, { w: "duck", ch: "鴨子" }, { w: "ear", ch: "耳朵" },
+            { w: "egg", ch: "蛋" }, { w: "eight", ch: "八" }, { w: "eighteen", ch: "十八" },
+            { w: "elephant", ch: "大象" }, { w: "eleven", ch: "十一" }, { w: "eye", ch: "眼睛" },
+            { w: "fifteen", ch: "十五" }, { w: "fine", ch: "很好的、健康的" }, { w: "fish", ch: "魚" },
+            { w: "five", ch: "五" }, { w: "floor", ch: "地板、樓層" }, { w: "football", ch: "美式足球" },
+            { w: "four", ch: "四" }, { w: "fourteen", ch: "十四" }, { w: "frog", ch: "青蛙" },
+            { w: "girl", ch: "女孩" }, { w: "glass", ch: "玻璃杯、玻璃" }, { w: "go", ch: "去" },
+            { w: "good", ch: "好的" }, { w: "goodbye", ch: "再見" }, { w: "grape", ch: "葡萄" },
+            { w: "gray", ch: "灰色的" }, { w: "green", ch: "綠色的" }, { w: "hair", ch: "頭髮" },
+            { w: "hand", ch: "手" }, { w: "happy", ch: "快樂的" }, { w: "have", ch: "有、吃" },
+            { w: "he", ch: "他" }, { w: "head", ch: "頭" }, { w: "hello", ch: "你好" },
+            { w: "her", ch: "她的、她" }, { w: "here", ch: "這裡" }, { w: "hi", ch: "嗨" },
+            { w: "his", ch: "他的" }, { w: "home", ch: "家" }, { w: "horse", ch: "馬" },
+            { w: "hot", ch: "熱的" }, { w: "house", ch: "房子" }, { w: "how", ch: "如何、多麼" },
+            { w: "ice", ch: "冰" }, { w: "icecream", ch: "冰淇淋" }, { w: "in", ch: "在...裡面" },
+            { w: "it", ch: "它" }, { w: "juice", ch: "果汁" }, { w: "kangaroo", ch: "袋鼠" },
+            { w: "king", ch: "國王" }, { w: "leg", ch: "腿" }, { w: "lemon", ch: "檸檬" },
+            { w: "let", ch: "讓" }, { w: "light", ch: "燈光、輕的" }, { w: "like", ch: "喜歡、像" },
+            { w: "lion", ch: "獅子" }, { w: "little", ch: "小的、少量的" }, { w: "long", ch: "長的" },
+            { w: "look", ch: "看" }, { w: "man", ch: "男人" }, { w: "many", ch: "許多" },
+            { w: "melon", ch: "甜瓜、香瓜" }, { w: "mom", ch: "媽媽" }, { w: "monkey", ch: "猴子" },
+            { w: "mouse", ch: "老鼠" }, { w: "mouth", ch: "嘴巴" }, { w: "my", ch: "我的" },
+            { w: "name", ch: "名字" }, { w: "new", ch: "新的" }, { w: "nine", ch: "九" },
+            { w: "nineteen", ch: "十九" }, { w: "no", ch: "不、沒有" }, { w: "nose", ch: "鼻子" },
+            { w: "not", ch: "不、不是" }, { w: "number", ch: "數字、號碼" }, { w: "oclock", ch: "...點鐘" },
+            { w: "ok", ch: "好的、可以" }, { w: "old", ch: "老的、舊的" }, { w: "on", ch: "在...上面" },
+            { w: "one", ch: "一" }, { w: "open", ch: "打開" }, { w: "orange", ch: "橘子、橘色的" },
+            { w: "our", ch: "我們的" }, { w: "out", ch: "外面、向外" }, { w: "panda", ch: "貓熊、大熊貓" },
             { w: "peach", ch: "桃子" }, { w: "pear", ch: "梨子" }, { w: "pen", ch: "原子筆" },
             { w: "pencil", ch: "鉛筆" }, { w: "phone", ch: "電話" }, { w: "pig", ch: "豬" },
-            { w: "pineapple", ch: "鳳梨" }, { w: "queen", ch: "皇后" }, { w: "rabbit", ch: "兔子" },
-            { w: "ruler", ch: "尺" }, { w: "sheep", ch: "綿羊" }, { w: "shirt", ch: "襯衫" },
-            { w: "shoe", ch: "鞋子" }, { w: "skirt", ch: "裙子" }, { w: "snake", ch: "蛇" },
-            { w: "socks", ch: "襪子" }, { w: "table", ch: "桌子" }, { w: "tiger", ch: "老虎" },
-            { w: "train", ch: "火車" }, { w: "truck", ch: "卡車" }, { w: "umbrella", ch: "雨傘" },
-            { w: "watch", ch: "手錶" }, { w: "window", ch: "窗戶" }, { w: "zebra", ch: "斑馬" },
-            { w: "zero", ch: "零" }, { w: "zoo", ch: "動物園" }
+            { w: "pineapple", ch: "鳳梨" }, { w: "pink", ch: "粉紅色的" }, { w: "play", ch: "玩耍" },
+            { w: "please", ch: "請" }, { w: "purple", ch: "紫色的" }, { w: "queen", ch: "皇后" },
+            { w: "rabbit", ch: "兔子" }, { w: "red", ch: "紅色的" }, { w: "ruler", ch: "尺" },
+            { w: "sad", ch: "傷心的" }, { w: "school", ch: "學校" }, { w: "see", ch: "看見" },
+            { w: "seven", ch: "七" }, { w: "seventeen", ch: "十七" }, { w: "she", ch: "她" },
+            { w: "sheep", ch: "綿羊" }, { w: "shirt", ch: "襯衫" }, { w: "shoe", ch: "鞋子" },
+            { w: "short", ch: "矮的、短的" }, { w: "shorts", ch: "短褲" }, { w: "sing", ch: "唱歌" },
+            { w: "sit", ch: "坐下" }, { w: "six", ch: "六" }, { w: "sixteen", ch: "十六" },
+            { w: "skirt", ch: "裙子" }, { w: "small", ch: "小的" }, { w: "snake", ch: "蛇" },
+            { w: "soccer", ch: "足球" }, { w: "socks", ch: "襪子" }, { w: "song", ch: "歌曲" },
+            { w: "sorry", ch: "抱歉的" }, { w: "stand", ch: "站立" }, { w: "stop", ch: "停止、車站" },
+            { w: "table", ch: "桌子" }, { w: "tall", ch: "高的" }, { w: "taxi", ch: "計程車" },
+            { w: "teacher", ch: "老師" }, { w: "telephone", ch: "電話" }, { w: "ten", ch: "十" },
+            { w: "tennis", ch: "網球" }, { w: "thanks", ch: "謝謝" }, { w: "that", ch: "那個" },
+            { w: "the", ch: "這個特定人或物" }, { w: "their", ch: "他們的" }, { w: "these", ch: "這些" },
+            { w: "they", ch: "他們" }, { w: "thirteen", ch: "十三" }, { w: "this", ch: "這個" },
+            { w: "those", ch: "那些" }, { w: "three", ch: "三" }, { w: "tiger", ch: "老虎" },
+            { w: "time", ch: "時間" }, { w: "train", ch: "火車" }, { w: "truck", ch: "卡車" },
+            { w: "tshirt", ch: "T恤" }, { w: "tv", ch: "電視" }, { w: "twelve", ch: "十二" },
+            { w: "twenty", ch: "二十" }, { w: "two", ch: "二" }, { w: "umbrella", ch: "雨傘" },
+            { w: "under", ch: "在...下面" }, { w: "wall", ch: "牆壁" }, { w: "want", ch: "想要" },
+            { w: "watch", ch: "手錶、觀看" }, { w: "we", ch: "我們" }, { w: "welcome", ch: "歡迎" },
+            { w: "what", ch: "什麼" }, { w: "where", ch: "哪裡" }, { w: "white", ch: "白色的" },
+            { w: "window", ch: "窗戶" }, { w: "woman", ch: "女人" }, { w: "yellow", ch: "黃色的" },
+            { w: "yes", ch: "是的" }, { w: "you", ch: "你、你們" }, { w: "young", ch: "年輕的" },
+            { w: "your", ch: "你的" }, { w: "zero", ch: "零" }, { w: "zoo", ch: "動物園" }
         ],
         2: [
-            { w: "beef", ch: "牛肉" }, { w: "birthday", ch: "生日" }, { w: "chocolate", ch: "巧克力" },
-            { w: "hamburger", ch: "漢堡" }, { w: "airplane", ch: "飛機" }, { w: "orange", ch: "橘子" },
-            { w: "ant", ch: "螞蟻" }, { w: "baby", ch: "嬰兒" }, { w: "bee", ch: "蜜蜂" },
-            { w: "behind", ch: "在...後面" }, { w: "between", ch: "在...之間" }, { w: "blackboard", ch: "黑板" },
-            { w: "body", ch: "身體" }, { w: "boot", ch: "靴子" }, { w: "bowl", ch: "碗" },
-            { w: "brother", ch: "兄弟" }, { w: "brush", ch: "刷子" }, { w: "card", ch: "卡片" },
+            { w: "airplane", ch: "飛機" }, { w: "ant", ch: "螞蟻" }, { w: "any", ch: "任何的" },
+            { w: "april", ch: "四月" }, { w: "august", ch: "八月" }, { w: "autumn", ch: "秋天" },
+            { w: "away", ch: "離開、遠離" }, { w: "baby", ch: "嬰兒" }, { w: "back", ch: "後面" },
+            { w: "bee", ch: "蜜蜂" }, { w: "beef", ch: "牛肉" }, { w: "behind", ch: "在...後面" },
+            { w: "between", ch: "在...之間" }, { w: "birthday", ch: "生日" }, { w: "blackboard", ch: "黑板" },
+            { w: "board", ch: "布告欄" }, { w: "body", ch: "身體" }, { w: "boot", ch: "靴子" },
+            { w: "bowl", ch: "碗" }, { w: "brother", ch: "兄弟" }, { w: "brush", ch: "刷子、刷牙" },
+            { w: "call", ch: "打電話" }, { w: "can", ch: "能、罐頭" }, { w: "card", ch: "卡片" },
             { w: "carrot", ch: "胡蘿蔔" }, { w: "ceiling", ch: "天花板" }, { w: "cheese", ch: "起司" },
-            { w: "cherry", ch: "櫻桃" }, { w: "chicken", ch: "雞肉" }, { w: "classroom", ch: "教室" },
-            { w: "coat", ch: "外套" }, { w: "coffee", ch: "咖啡" }, { w: "cola", ch: "可樂" },
-            { w: "comb", ch: "梳子" }, { w: "computer", ch: "電腦" }, { w: "corn", ch: "玉米" },
-            { w: "doll", ch: "洋娃娃" }, { w: "dress", ch: "洋裝" }, { w: "drum", ch: "鼓" },
-            { w: "eraser", ch: "橡皮擦" }, { w: "family", ch: "家庭" }, { w: "father", ch: "父親" },
-            { w: "flower", ch: "花朵" }, { w: "glove", ch: "手套" }, { w: "goat", ch: "山羊" },
-            { w: "guitar", ch: "吉他" }, { w: "hat", ch: "帽子" }, { w: "helicopter", ch: "直升機" },
-            { w: "jacket", ch: "夾克" }, { w: "jeans", ch: "牛仔褲" }, { w: "kite", ch: "風箏" },
-            { w: "knife", ch: "刀子" }, { w: "lettuce", ch: "生菜" }, { w: "mango", ch: "芒果" },
-            { w: "milk", ch: "牛奶" }, { w: "mother", ch: "母親" }, { w: "noodle", ch: "麵條" },
-            { w: "onion", ch: "洋蔥" }, { w: "pizza", ch: "披薩" }, { w: "plate", ch: "盤子" },
-            { w: "potato", ch: "馬鈴薯" }, { w: "robot", ch: "機器人" }, { w: "sandwich", ch: "三明治" },
-            { w: "scissors", ch: "剪刀" }, { w: "spoon", ch: "湯匙" }, { w: "steak", ch: "牛排" },
-            { w: "strawberry", ch: "草莓" }, { w: "sweater", ch: "毛衣" }, { w: "tomato", ch: "番茄" },
-            { w: "violin", ch: "小提琴" }, { w: "watermelon", ch: "西瓜" }
+            { w: "cherry", ch: "櫻桃" }, { w: "chicken", ch: "雞肉" }, { w: "child", ch: "小孩" },
+            { w: "children", ch: "小孩（複數）" }, { w: "chocolate", ch: "巧克力" }, { w: "class", ch: "班級" },
+            { w: "classroom", ch: "教室" }, { w: "coat", ch: "外套" }, { w: "coffee", ch: "咖啡" },
+            { w: "cola", ch: "可樂" }, { w: "comb", ch: "梳子" }, { w: "computer", ch: "電腦" },
+            { w: "cook", ch: "廚師、烹調" }, { w: "corn", ch: "玉米" }, { w: "day", ch: "日子" },
+            { w: "december", ch: "十二月" }, { w: "do", ch: "做" }, { w: "doll", ch: "洋娃娃" },
+            { w: "draw", ch: "畫畫" }, { w: "dress", ch: "洋裝" }, { w: "drink", ch: "飲料" },
+            { w: "drive", ch: "開車" }, { w: "drum", ch: "鼓" }, { w: "eat", ch: "吃" },
+            { w: "eraser", ch: "橡皮擦" }, { w: "every", ch: "每個的" }, { w: "everybody", ch: "每個人" },
+            { w: "everyone", ch: "每個人" }, { w: "face", ch: "臉" }, { w: "fall", ch: "秋天、跌倒" },
+            { w: "family", ch: "家庭" }, { w: "fat", ch: "胖的" }, { w: "father", ch: "父親" },
+            { w: "favorite", ch: "最喜愛的" }, { w: "february", ch: "二月" }, { w: "fifty", ch: "五十" },
+            { w: "finger", ch: "手指" }, { w: "fishing", ch: "釣魚" }, { w: "flower", ch: "花朵" },
+            { w: "fly", ch: "飛、蒼蠅" }, { w: "foot", ch: "腳" }, { w: "fork", ch: "叉子" },
+            { w: "forty", ch: "四十" }, { w: "friday", ch: "星期五" }, { w: "friend", ch: "朋友" },
+            { w: "from", ch: "來自" }, { w: "give", ch: "給" }, { w: "glasses", ch: "眼鏡" },
+            { w: "glove", ch: "手套" }, { w: "goat", ch: "山羊" }, { w: "golf", ch: "高爾夫球" },
+            { w: "great", ch: "棒的" }, { w: "greenpepper", ch: "青椒" }, { w: "guitar", ch: "吉他" },
+            { w: "ham", ch: "火腿" }, { w: "hamburger", ch: "漢堡" }, { w: "hat", ch: "帽子" },
+            { w: "helicopter", ch: "直升機" }, { w: "hen", ch: "母雞" }, { w: "him", ch: "他（受格）" },
+            { w: "hotdog", ch: "熱狗" }, { w: "jacket", ch: "夾克" }, { w: "january", ch: "一月" },
+            { w: "jeans", ch: "牛仔褲" }, { w: "july", ch: "七月" }, { w: "jump", ch: "跳躍" },
+            { w: "june", ch: "六月" }, { w: "kiss", ch: "親吻" }, { w: "kite", ch: "風箏" },
+            { w: "knee", ch: "膝蓋" }, { w: "knife", ch: "刀子" }, { w: "know", ch: "知道" },
+            { w: "lettuce", ch: "生菜" }, { w: "love", ch: "愛" }, { w: "mango", ch: "芒果" },
+            { w: "map", ch: "地圖" }, { w: "march", ch: "三月" }, { w: "may", ch: "五月" },
+            { w: "me", ch: "我（受格）" }, { w: "milk", ch: "牛奶" }, { w: "monday", ch: "星期一" },
+            { w: "month", ch: "月份" }, { w: "mother", ch: "母親" }, { w: "motorcycle", ch: "機車" },
+            { w: "neck", ch: "脖子" }, { w: "noodle", ch: "麵條" }, { w: "november", ch: "十一月" },
+            { w: "now", ch: "現在" }, { w: "october", ch: "十月" }, { w: "onion", ch: "洋蔥" },
+            { w: "or", ch: "或者" }, { w: "page", ch: "頁面" }, { w: "pants", ch: "長褲" },
+            { w: "party", ch: "派對" }, { w: "pea", ch: "豌豆" }, { w: "pencilcase", ch: "鉛筆盒" },
+            { w: "person", ch: "人" }, { w: "piano", ch: "鋼琴" }, { w: "pie", ch: "派" },
+            { w: "pizza", ch: "披薩" }, { w: "plate", ch: "盤子" }, { w: "poster", ch: "海報" },
+            { w: "potato", ch: "馬鈴薯" }, { w: "put", ch: "放置" }, { w: "read", ch: "閱讀" },
+            { w: "rice", ch: "米飯" }, { w: "ride", ch: "騎（車）" }, { w: "robot", ch: "機器人" },
+            { w: "room", ch: "房間" }, { w: "rubber", ch: "橡皮擦" }, { w: "run", ch: "跑步" },
+            { w: "sandwich", ch: "三明治" }, { w: "saturday", ch: "星期六" }, { w: "scissors", ch: "剪刀" },
+            { w: "season", ch: "季節" }, { w: "september", ch: "九月" }, { w: "ship", ch: "大船" },
+            { w: "shoulder", ch: "肩膀" }, { w: "show", ch: "展示" }, { w: "sister", ch: "姊妹" },
+            { w: "sleep", ch: "睡覺" }, { w: "soda", ch: "汽水" }, { w: "some", ch: "一些" },
+            { w: "soup", ch: "湯" }, { w: "spoon", ch: "湯匙" }, { w: "spring", ch: "春天" },
+            { w: "steak", ch: "牛排" }, { w: "strawberry", ch: "草莓" }, { w: "summer", ch: "夏天" },
+            { w: "sunday", ch: "星期日" }, { w: "sweater", ch: "毛衣" }, { w: "swim", ch: "游泳" },
+            { w: "swimmingpool", ch: "游泳池" }, { w: "talk", ch: "談話" }, { w: "tea", ch: "茶" },
+            { w: "them", ch: "他們（受格）" }, { w: "there", ch: "那裡、有" }, { w: "thin", ch: "瘦的、薄的" },
+            { w: "thirty", ch: "三十" }, { w: "thursday", ch: "星期四" }, { w: "tie", ch: "領帶" },
+            { w: "to", ch: "到、給" }, { w: "toast", ch: "吐司" }, { w: "today", ch: "今天" },
+            { w: "toe", ch: "腳趾頭" }, { w: "tomato", ch: "番茄" }, { w: "too", ch: "也" },
+            { w: "tooth", ch: "牙齒" }, { w: "toy", ch: "玩具" }, { w: "tree", ch: "樹" },
+            { w: "trumpet", ch: "喇叭" }, { w: "tuesday", ch: "星期二" }, { w: "us", ch: "我們（受格）" },
+            { w: "very", ch: "非常" }, { w: "violin", ch: "小提琴" }, { w: "volleyball", ch: "排球" },
+            { w: "walk", ch: "走路" }, { w: "wash", ch: "洗滌" }, { w: "water", ch: "水" },
+            { w: "watermelon", ch: "西瓜" }, { w: "wear", ch: "穿戴" }, { w: "wednesday", ch: "星期三" },
+            { w: "when", ch: "什麼時候" }, { w: "whiteboard", ch: "白板" }, { w: "who", ch: "誰" },
+            { w: "winter", ch: "冬天" }, { w: "work", ch: "工作" }, { w: "zebra", ch: "斑馬" }
         ],
         3: [
-            { w: "butterfly", ch: "蝴蝶" }, { w: "cabbage", ch: "高麗菜" }, { w: "doctor", ch: "醫生" },
-            { w: "firefighter", ch: "消防員" }, { w: "window", ch: "窗戶" }, { w: "spider", ch: "蜘蛛" },
-            { w: "armchair", ch: "扶手椅" }, { w: "balloon", ch: "氣球" }, { w: "bathroom", ch: "浴室" },
-            { w: "bedroom", ch: "臥室" }, { w: "carpet", ch: "地毯" }, { w: "chalk", ch: "粉筆" },
-            { w: "chess", ch: "西洋棋" }, { w: "cloudy", ch: "多雲的" }, { w: "crayon", ch: "蠟筆" },
-            { w: "cupboard", ch: "碗櫥" }, { w: "curtain", ch: "窗簾" }, { w: "drawer", ch: "抽屜" },
-            { w: "driver", ch: "司機" }, { w: "farmer", ch: "農夫" }, { w: "fisherman", ch: "漁夫" },
-            { w: "glue", ch: "膠水" }, { w: "homework", ch: "家庭作業" }, { w: "husband", ch: "丈夫" },
-            { w: "kitchen", ch: "廚房" }, { w: "lamp", ch: "檯燈" }, { w: "nurse", ch: "護士" },
-            { w: "octopus", ch: "章魚" }, { w: "pajamas", ch: "睡衣" }, { w: "paper", ch: "紙張" },
-            { w: "pasta", ch: "義大利麵" }, { w: "picture", ch: "照片" }, { w: "pilot", ch: "飛行員" },
-            { w: "radio", ch: "收音機" }, { w: "raincoat", ch: "雨衣" }, { w: "salad", ch: "沙拉" },
-            { w: "shark", ch: "鯊魚" }, { w: "shower", ch: "淋浴" }, { w: "singer", ch: "歌手" },
-            { w: "sofa", ch: "沙發" }, { w: "spaghetti", ch: "義大利麵條" }, { w: "sunglasses", ch: "太陽眼鏡" },
-            { w: "toothbrush", ch: "牙刷" }, { w: "toothpaste", ch: "牙膏" }, { w: "trousers", ch: "長褲" },
-            { w: "turtle", ch: "烏龜" }, { w: "uncle", ch: "叔叔" }, { w: "wife", ch: "妻子" },
+            { w: "after", ch: "在...之後" }, { w: "afternoon", ch: "下午" }, { w: "all", ch: "全部的" },
+            { w: "answer", ch: "回答、答案" }, { w: "anyone", ch: "任何人" }, { w: "anything", ch: "任何事物" },
+            { w: "armchair", ch: "扶手椅" }, { w: "ask", ch: "問、要求" }, { w: "aunt", ch: "阿姨、姑姑" },
+            { w: "balloon", ch: "氣球" }, { w: "bath", ch: "洗澡" }, { w: "bathroom", ch: "浴室" },
+            { w: "bedroom", ch: "臥室" }, { w: "before", ch: "在...之前" }, { w: "begin", ch: "開始" },
+            { w: "butterfly", ch: "蝴蝶" }, { w: "buy", ch: "買" }, { w: "cabbage", ch: "高麗菜" },
+            { w: "carpet", ch: "地毯" }, { w: "chalk", ch: "粉筆" }, { w: "chess", ch: "西洋棋" },
+            { w: "clear", ch: "清楚的" }, { w: "cloud", ch: "雲" }, { w: "cloudy", ch: "多雲的" },
+            { w: "colorful", ch: "五彩繽紛的" }, { w: "cook", ch: "廚師" }, { w: "cool", ch: "涼爽的" },
+            { w: "crayon", ch: "蠟筆" }, { w: "cry", ch: "哭泣" }, { w: "cupboard", ch: "櫥櫃" },
+            { w: "curtain", ch: "窗簾" }, { w: "dance", ch: "跳舞" }, { w: "date", ch: "日期" },
+            { w: "daughter", ch: "女兒" }, { w: "diningroom", ch: "餐廳" }, { w: "doctor", ch: "醫生" },
+            { w: "dollar", ch: "元" }, { w: "drawer", ch: "抽屜" }, { w: "driver", ch: "司機" },
+            { w: "eighth", ch: "第八" }, { w: "eighty", ch: "八十" }, { w: "evening", ch: "傍晚" },
+            { w: "everything", ch: "每件事物" }, { w: "fall", ch: "秋天" }, { w: "farm", ch: "農場" },
+            { w: "farmer", ch: "農夫" }, { w: "feel", ch: "感覺" }, { w: "fifth", ch: "第五" },
+            { w: "fire", ch: "火" }, { w: "firefighter", ch: "消防員" }, { w: "first", ch: "第一" },
+            { w: "fisherman", ch: "漁夫" }, { w: "food", ch: "食物" }, { w: "fourth", ch: "第四" },
+            { w: "frenchfries", ch: "薯條" }, { w: "fry", ch: "油炸" }, { w: "game", ch: "遊戲" },
+            { w: "get", ch: "得到" }, { w: "glue", ch: "膠水" }, { w: "grade", ch: "年級" },
+            { w: "grandfather", ch: "爺爺、外公" }, { w: "grandmother", ch: "奶奶、外婆" }, { w: "half", ch: "一半" },
+            { w: "homemaker", ch: "家庭主婦" }, { w: "homework", ch: "作業" }, { w: "hour", ch: "小時" },
+            { w: "hundred", ch: "百" }, { w: "hungry", ch: "飢餓的" }, { w: "husband", ch: "丈夫" },
+            { w: "job", ch: "工作" }, { w: "key", ch: "鑰匙" }, { w: "kitchen", ch: "廚房" },
+            { w: "lamp", ch: "檯燈" }, { w: "left", ch: "左邊" }, { w: "line", ch: "線" },
+            { w: "live", ch: "居住" }, { w: "livingroom", ch: "客廳" }, { w: "make", ch: "製作" },
+            { w: "mat", ch: "墊子" }, { w: "may", ch: "可以" }, { w: "minute", ch: "分鐘" },
+            { w: "miss", ch: "小姐" }, { w: "money", ch: "錢" }, { w: "morning", ch: "早上" },
+            { w: "mr", ch: "先生" }, { w: "mrs", ch: "太太" }, { w: "ms", ch: "女士" },
+            { w: "much", ch: "許多" }, { w: "music", ch: "音樂" }, { w: "need", ch: "需要" },
+            { w: "next", ch: "下一個" }, { w: "nice", ch: "美好的" }, { w: "night", ch: "夜晚" },
+            { w: "ninth", ch: "第九" }, { w: "ninety", ch: "九十" }, { w: "noon", ch: "中午" },
+            { w: "nothing", ch: "沒有東西" }, { w: "nurse", ch: "護士" }, { w: "octopus", ch: "章魚" },
+            { w: "of", ch: "...的" }, { w: "over", ch: "在...上方" }, { w: "pair", ch: "一雙" },
+            { w: "pajamas", ch: "睡衣" }, { w: "paper", ch: "紙張" }, { w: "past", ch: "經過" },
+            { w: "pasta", ch: "義大利麵" }, { w: "paste", ch: "黏貼" }, { w: "people", ch: "人們" },
+            { w: "pet", ch: "寵物" }, { w: "picture", ch: "照片" }, { w: "piece", ch: "一片" },
+            { w: "pilot", ch: "飛行員" }, { w: "policeofficer", ch: "警察" }, { w: "quarter", ch: "十五分鐘" },
+            { w: "radio", ch: "收音機" }, { w: "rain", ch: "雨水" }, { w: "raincoat", ch: "雨衣" },
+            { w: "rainy", ch: "下雨的" }, { w: "ready", ch: "準備好的" }, { w: "right", ch: "右邊" },
+            { w: "ring", ch: "戒指" }, { w: "round", ch: "圓的" }, { w: "salad", ch: "沙拉" },
+            { w: "salesperson", ch: "店員" }, { w: "second", ch: "第二、秒" }, { w: "sell", ch: "賣" },
+            { w: "seventh", ch: "第七" }, { w: "seventy", ch: "七十" }, { w: "shark", ch: "鯊魚" },
+            { w: "shower", ch: "淋浴" }, { w: "sick", ch: "生病的" }, { w: "singer", ch: "歌手" },
+            { w: "sixth", ch: "第六" }, { w: "sixty", ch: "六十" }, { w: "snow", ch: "雪" },
+            { w: "snowy", ch: "下雪的" }, { w: "sofa", ch: "沙發" }, { w: "someone", ch: "某人" },
+            { w: "something", ch: "某事" }, { w: "son", ch: "兒子" }, { w: "spaghetti", ch: "義大利麵條" },
+            { w: "speak", ch: "講話" }, { w: "spider", ch: "蜘蛛" }, { w: "sport", ch: "運動" },
+            { w: "start", ch: "開始" }, { w: "store", ch: "商店" }, { w: "story", ch: "故事" },
+            { w: "sun", ch: "太陽" }, { w: "sunglasses", ch: "太陽眼鏡" }, { w: "sunny", ch: "晴朗的" },
+            { w: "sure", ch: "確定的" }, { w: "take", ch: "拿、搭乘" }, { w: "tape", ch: "膠帶" },
+            { w: "tenth", ch: "第十" }, { w: "then", ch: "然後" }, { w: "thing", ch: "東西" },
+            { w: "think", ch: "想" }, { w: "third", ch: "第三" }, { w: "tomorrow", ch: "明天" },
+            { w: "toothbrush", ch: "牙刷" }, { w: "toothpaste", ch: "牙膏" }, { w: "touch", ch: "觸摸" },
+            { w: "trousers", ch: "長褲" }, { w: "turtle", ch: "烏龜" }, { w: "uncle", ch: "叔叔" },
+            { w: "underline", ch: "畫底線" }, { w: "warm", ch: "溫暖的" }, { w: "weather", ch: "天氣" },
+            { w: "well", ch: "很好地" }, { w: "wife", ch: "妻子" }, { w: "will", ch: "將會" },
+            { w: "wind", ch: "風" }, { w: "windy", ch: "風大的" }, { w: "with", ch: "和...一起" },
+            { w: "word", ch: "單字" }, { w: "worker", ch: "員工" }, { w: "write", ch: "寫" },
             { w: "writer", ch: "作家" }
         ],
         4: [
-            { w: "crocodile", ch: "鱷魚" }, { w: "bacon", ch: "培根" }, { w: "interesting", ch: "有趣的" },
-            { w: "supermarket", ch: "超級市場" }, { w: "snowman", ch: "雪人" }, { w: "bank", ch: "銀行" },
-            { w: "barbecue", ch: "烤肉" }, { w: "beach", ch: "海灘" }, { w: "bookstore", ch: "書店" },
-            { w: "butter", ch: "奶油" }, { w: "calendar", ch: "日曆" }, { w: "city", ch: "城市" },
-            { w: "dryer", ch: "烘乾機" }, { w: "english", ch: "英文" }, { w: "forest", ch: "森林" },
-            { w: "giraffe", ch: "長頸鹿" }, { w: "gorilla", ch: "大猩猩" }, { w: "hippo", ch: "河馬" },
-            { w: "honey", ch: "蜂蜜" }, { w: "ketchup", ch: "番茄醬" }, { w: "kitten", ch: "小貓" },
-            { w: "lake", ch: "湖泊" }, { w: "magician", ch: "魔術師" }, { w: "mountain", ch: "山" },
-            { w: "musician", ch: "音樂家" }, { w: "notebook", ch: "筆記本" }, { w: "oven", ch: "烤箱" },
-            { w: "playground", ch: "遊樂場" }, { w: "pork", ch: "豬肉" }, { w: "postcard", ch: "明信片" },
-            { w: "puppy", ch: "小狗" }, { w: "river", ch: "河流" }, { w: "sausage", ch: "香腸" },
-            { w: "scientist", ch: "科學家" }, { w: "vegetable", ch: "蔬菜" }, { w: "village", ch: "村莊" },
-            { w: "wonderful", ch: "極好的" }
+            { w: "about", ch: "關於" }, { w: "above", ch: "在...上方" }, { w: "again", ch: "再次" },
+            { w: "ago", ch: "...以前" }, { w: "airport", ch: "機場" }, { w: "always", ch: "總是" },
+            { w: "animal", ch: "動物" }, { w: "as", ch: "如同" }, { w: "bacon", ch: "培根" },
+            { w: "bank", ch: "銀行" }, { w: "barbecue", ch: "烤肉" }, { w: "beach", ch: "海灘" },
+            { w: "because", ch: "因為" }, { w: "bell", ch: "鈴鐺" }, { w: "bookstore", ch: "書店" },
+            { w: "boring", ch: "無聊的" }, { w: "bread", ch: "麵包" }, { w: "breakfast", ch: "早餐" },
+            { w: "bring", ch: "帶來" }, { w: "build", ch: "建造" }, { w: "building", ch: "建築物" },
+            { w: "busy", ch: "忙碌的" }, { w: "but", ch: "但是" }, { w: "butter", ch: "奶油" },
+            { w: "by", ch: "在...旁邊" }, { w: "calendar", ch: "日曆" }, { w: "can", ch: "能、可以" },
+            { w: "cap", ch: "鴨舌帽" }, { w: "carrier", ch: "運輸工具" }, { w: "carry", ch: "攜帶" },
+            { w: "city", ch: "城市" }, { w: "clean", ch: "乾淨的" }, { w: "close", ch: "接近的" },
+            { w: "correct", ch: "正確的" }, { w: "country", ch: "國家" }, { w: "crazy", ch: "瘋狂的" },
+            { w: "crocodile", ch: "鱷魚" }, { w: "cut", ch: "切、割" }, { w: "cute", ch: "可愛的" },
+            { w: "dark", ch: "黑暗的" }, { w: "dinner", ch: "晚餐" }, { w: "dirty", ch: "髒的" },
+            { w: "dry", ch: "乾的" }, { w: "dryer", ch: "烘乾機" }, { w: "email", ch: "電子郵件" },
+            { w: "english", ch: "英文" }, { w: "fast", ch: "快的" }, { w: "find", ch: "發現" },
+            { w: "firestation", ch: "消防局" }, { w: "flowershop", ch: "花店" }, { w: "for", ch: "為了" },
+            { w: "forest", ch: "森林" }, { w: "fruit", ch: "水果" }, { w: "fun", ch: "好玩的" },
+            { w: "funny", ch: "好笑的" }, { w: "garden", ch: "花園" }, { w: "giraffe", ch: "長頸鹿" },
+            { w: "gorilla", ch: "大猩猩" }, { w: "ground", ch: "地面" }, { w: "hear", ch: "聽見" },
+            { w: "help", ch: "幫忙" }, { w: "high", ch: "高的" }, { w: "hippo", ch: "河馬" },
+            { w: "his", ch: "他的" }, { w: "honey", ch: "蜂蜜" }, { w: "idea", ch: "主意" },
+            { w: "interesting", ch: "有趣的" }, { w: "its", ch: "它的" }, { w: "jam", ch: "果醬" },
+            { w: "jar", ch: "玻璃罐" }, { w: "ketchup", ch: "番茄醬" }, { w: "kitten", ch: "小貓" },
+            { w: "lake", ch: "湖泊" }, { w: "large", ch: "大的" }, { w: "last", ch: "最後的" },
+            { w: "leave", ch: "離開" }, { w: "letter", ch: "信件" }, { w: "low", ch: "低的" },
+            { w: "lunch", ch: "午餐" }, { w: "magic", ch: "魔術" }, { w: "magician", ch: "魔術師" },
+            { w: "mail", ch: "郵件" }, { w: "math", ch: "數學" }, { w: "meal", ch: "一餐" },
+            { w: "meat", ch: "肉類" }, { w: "mind", ch: "介意" }, { w: "mine", ch: "我的" },
+            { w: "mountain", ch: "山" }, { w: "musician", ch: "音樂家" }, { w: "near", ch: "附近" },
+            { w: "never", ch: "從不" }, { w: "note", ch: "便條" }, { w: "notebook", ch: "筆記本" },
+            { w: "off", ch: "關掉" }, { w: "often", ch: "常常" }, { w: "once", ch: "一次" },
+            { w: "only", ch: "只有" }, { w: "ours", ch: "我們的" }, { w: "oven", ch: "烤箱" },
+            { w: "park", ch: "公園" }, { w: "pay", ch: "付款" }, { w: "pepper", ch: "胡椒粉" },
+            { w: "pick", ch: "挑選" }, { w: "player", ch: "球員" }, { w: "playground", ch: "遊樂場" },
+            { w: "policestation", ch: "警察局" }, { w: "pork", ch: "豬肉" }, { w: "postcard", ch: "明信片" },
+            { w: "postoffice", ch: "郵局" }, { w: "puppy", ch: "小狗" }, { w: "rarely", ch: "很少" },
+            { w: "river", ch: "河流" }, { w: "salt", ch: "鹽" }, { w: "sausage", ch: "香腸" },
+            { w: "say", ch: "說" }, { w: "science", ch: "科學" }, { w: "scientist", ch: "科學家" },
+            { w: "sea", ch: "海洋" }, { w: "seat", ch: "座位" }, { w: "seesaw", ch: "蹺蹺板" },
+            { w: "seldom", ch: "很少" }, { w: "send", ch: "寄送" }, { w: "shop", ch: "商店" },
+            { w: "slide", ch: "溜滑梯" }, { w: "slow", ch: "慢的" }, { w: "smile", ch: "微笑" },
+            { w: "snack", ch: "點心" }, { w: "snowman", ch: "雪人" }, { w: "sometimes", ch: "有時候" },
+            { w: "station", ch: "車站" }, { w: "stay", ch: "停留" }, { w: "street", ch: "街道" },
+            { w: "strong", ch: "強壯的" }, { w: "student", ch: "學生" }, { w: "study", ch: "研讀" },
+            { w: "sugar", ch: "糖" }, { w: "supermarket", ch: "超級市場" }, { w: "sweet", ch: "甜的" },
+            { w: "swing", ch: "秋千" }, { w: "teach", ch: "教導" }, { w: "television", ch: "電視" },
+            { w: "tell", ch: "告訴" }, { w: "test", ch: "考試" }, { w: "than", ch: "比" },
+            { w: "thirsty", ch: "口渴的" }, { w: "thousand", ch: "千" }, { w: "tonight", ch: "今晚" },
+            { w: "town", ch: "城鎮" }, { w: "turn", ch: "轉彎" }, { w: "twice", ch: "兩次" },
+            { w: "usually", ch: "通常" }, { w: "vegetable", ch: "蔬菜" }, { w: "village", ch: "村莊" },
+            { w: "visit", ch: "參觀" }, { w: "wait", ch: "等待" }, { w: "weak", ch: "虛弱的" },
+            { w: "week", ch: "星期" }, { w: "weekend", ch: "週末" }, { w: "wet", ch: "濕的" },
+            { w: "which", ch: "哪一個" }, { w: "whose", ch: "誰的" }, { w: "why", ch: "為什麼" },
+            { w: "wonderful", ch: "極好的" }, { w: "world", ch: "世界" }, { w: "would", ch: "想要" },
+            { w: "wrong", ch: "錯誤的" }, { w: "yard", ch: "庭院" }, { w: "year", ch: "年份" },
+            { w: "yesterday", ch: "昨天" }, { w: "yours", ch: "你的" }
         ],
         5: [
-            { w: "apartment", ch: "公寓" }, { w: "bakery", ch: "麵包店" }, { w: "typhoon", ch: "颱風" },
-            { w: "hospital", ch: "醫院" }, { w: "rainbow", ch: "彩虹" }, { w: "bathtub", ch: "浴缸" },
-            { w: "beard", ch: "鬍子" }, { w: "beautiful", ch: "美麗的" }, { w: "bowling", ch: "保齡球" },
-            { w: "bridge", ch: "橋樑" }, { w: "church", ch: "教堂" }, { w: "classmate", ch: "同學" },
-            { w: "company", ch: "公司" }, { w: "couch", ch: "長沙發" }, { w: "engineer", ch: "工程師" },
-            { w: "expensive", ch: "昂貴的" }, { w: "factory", ch: "工廠" }, { w: "hotel", ch: "飯店" },
-            { w: "island", ch: "島嶼" }, { w: "library", ch: "圖書館" }, { w: "machine", ch: "機器" },
-            { w: "manager", ch: "經理" }, { w: "milkshake", ch: "奶昔" }, { w: "ocean", ch: "海洋" },
-            { w: "office", ch: "辦公室" }, { w: "picnic", ch: "野餐" }, { w: "restaurant", ch: "餐廳" },
-            { w: "restroom", ch: "洗手間" }, { w: "sidewalk", ch: "人行道" }, { w: "teapot", ch: "茶壺" },
-            { w: "uniform", ch: "制服" }, { w: "vacation", ch: "假期" }, { w: "waitress", ch: "女服務生" }
+            { w: "across", ch: "橫越" }, { w: "afraid", ch: "害怕的" }, { w: "almost", ch: "幾乎" },
+            { w: "along", ch: "沿著" }, { w: "also", ch: "也、而且" }, { w: "ankle", ch: "腳踝" },
+            { w: "apartment", ch: "公寓" }, { w: "around", ch: "在...周圍" }, { w: "arrive", ch: "到達" },
+            { w: "art", ch: "藝術" }, { w: "artist", ch: "藝術家" }, { w: "babysit", ch: "當褓姆" },
+            { w: "babysitter", ch: "褓姆" }, { w: "bake", ch: "烘烤" }, { w: "bakery", ch: "麵包店" },
+            { w: "bark", ch: "狗吠" }, { w: "basket", ch: "籃子" }, { w: "bat", ch: "蝙蝠" },
+            { w: "bathtub", ch: "浴缸" }, { w: "beard", ch: "鬍子" }, { w: "beautiful", ch: "美麗的" },
+            { w: "below", ch: "在...下方" }, { w: "beside", ch: "在...旁邊" }, { w: "borrow", ch: "借入" },
+            { w: "boss", ch: "老闆" }, { w: "both", ch: "兩者都" }, { w: "bottom", ch: "底部" },
+            { w: "bowling", ch: "保齡球" }, { w: "break", ch: "打破" }, { w: "bridge", ch: "橋樑" },
+            { w: "bright", ch: "明亮的" }, { w: "burn", ch: "燃燒" }, { w: "camp", ch: "露營" },
+            { w: "camping", ch: "露營活動" }, { w: "catch", ch: "接住" }, { w: "cheap", ch: "便宜的" },
+            { w: "chest", ch: "胸膛" }, { w: "christmas", ch: "聖誕節" }, { w: "church", ch: "教堂" },
+            { w: "classmate", ch: "同學" }, { w: "clever", ch: "聰明的" }, { w: "climb", ch: "攀爬" },
+            { w: "climbing", ch: "攀登活動" }, { w: "coin", ch: "硬幣" }, { w: "company", ch: "公司" },
+            { w: "copy", ch: "複製" }, { w: "corner", ch: "角落" }, { w: "cost", ch: "花費" },
+            { w: "couch", ch: "長沙發" }, { w: "count", ch: "計算" }, { w: "cover", ch: "覆蓋" },
+            { w: "cross", ch: "跨越" }, { w: "dear", ch: "親愛的" }, { w: "departmentstore", ch: "百貨公司" },
+            { w: "die", ch: "死亡" }, { w: "dish", ch: "盤子" }, { w: "down", ch: "向下" },
+            { w: "drop", ch: "掉落" }, { w: "drugstore", ch: "藥局" }, { w: "during", ch: "在...期間" },
+            { w: "each", ch: "每個" }, { w: "early", ch: "早的" }, { w: "easy", ch: "容易的" },
+            { w: "end", ch: "結束" }, { w: "engineer", ch: "工程師" }, { w: "exercise", ch: "運動、練習" },
+            { w: "expensive", ch: "昂貴的" }, { w: "factory", ch: "工廠" }, { w: "fan", ch: "電風扇" },
+            { w: "fastfood", ch: "速食" }, { w: "fill", ch: "充滿" }, { w: "film", ch: "電影" },
+            { w: "fix", ch: "修理" }, { w: "follow", ch: "跟隨" }, { w: "free", ch: "自由、免費" },
+            { w: "fresh", ch: "新鮮的" }, { w: "friendly", ch: "友好的" }, { w: "front", ch: "前面" },
+            { w: "full", ch: "飽的" }, { w: "gas", ch: "瓦斯" }, { w: "gasstation", ch: "加油站" },
+            { w: "gift", ch: "禮物" }, { w: "glad", ch: "高興的" }, { w: "grass", ch: "草地" },
+            { w: "halloween", ch: "萬聖節前夕" }, { w: "handsome", ch: "英俊的" }, { w: "happen", ch: "發生" },
+            { w: "hard", ch: "困難、努力" }, { w: "healthy", ch: "健康的" }, { w: "helpful", ch: "有幫助的" },
+            { w: "hide", ch: "躲藏" }, { w: "hit", ch: "打" }, { w: "hold", ch: "拿著" },
+            { w: "holiday", ch: "假日" }, { w: "honest", ch: "誠實的" }, { w: "hospital", ch: "醫院" },
+            { w: "hotel", ch: "飯店" }, { w: "hurry", ch: "趕快" }, { w: "hurt", ch: "受傷" },
+            { w: "ill", ch: "生病的" }, { w: "inside", ch: "在...裡面" }, { w: "into", ch: "進入...之中" },
+            { w: "island", ch: "島嶼" }, { w: "jogging", ch: "慢跑" }, { w: "join", ch: "參加" },
+            { w: "just", ch: "剛才" }, { w: "keep", ch: "保持" }, { w: "kick", ch: "踢" },
+            { w: "kid", ch: "小孩" }, { w: "kill", ch: "殺死" }, { w: "kind", ch: "仁慈、種類" },
+            { w: "knock", ch: "敲門" }, { w: "lamb", ch: "小羊" }, { w: "land", ch: "土地" },
+            { w: "late", ch: "遲到的" }, { w: "later", ch: "稍後" }, { w: "laugh", ch: "笑" },
+            { w: "leader", ch: "領導者" }, { w: "learn", ch: "學習" }, { w: "lend", ch: "借出" },
+            { w: "less", ch: "較少的" }, { w: "library", ch: "圖書館" }, { w: "lie", ch: "躺、說謊" },
+            { w: "list", ch: "清單" }, { w: "lose", ch: "輸掉" }, { w: "loud", ch: "大聲的" },
+            { w: "loudly", ch: "大聲地" }, { w: "machine", ch: "機器" }, { w: "manager", ch: "經理" },
+            { w: "mark", ch: "標記" }, { w: "market", ch: "市場" }, { w: "matter", ch: "事情" },
+            { w: "menu", ch: "菜單" }, { w: "middle", ch: "中間" }, { w: "mile", ch: "英哩" },
+            { w: "milkshake", ch: "奶昔" }, { w: "modern", ch: "現代的" }, { w: "more", ch: "更多的" },
+            { w: "most", ch: "最、大部分" }, { w: "move", ch: "移動" }, { w: "movie", ch: "電影" },
+            { w: "moviestar", ch: "電影明星" }, { w: "must", ch: "必須" }, { w: "nod", ch: "點頭" },
+            { w: "ocean", ch: "海洋" }, { w: "office", ch: "辦公室" }, { w: "oil", ch: "油" },
+            { w: "order", ch: "點餐、命令" }, { w: "other", ch: "其他的" }, { w: "outside", ch: "在...外面" },
+            { w: "pack", ch: "打包" }, { w: "paint", ch: "油漆" }, { w: "painting", ch: "畫作" },
+            { w: "parkinglot", ch: "停車場" }, { w: "pass", ch: "通過" }, { w: "picnic", ch: "野餐" },
+            { w: "place", ch: "地方" }, { w: "plan", ch: "計畫" }, { w: "point", ch: "指向" },
+            { w: "poor", ch: "貧窮的" }, { w: "popcorn", ch: "爆米花" }, { w: "pot", ch: "鍋子" },
+            { w: "practice", ch: "練習" }, { w: "pretty", ch: "漂亮的" }, { w: "pull", ch: "拉" },
+            { w: "push", ch: "推" }, { w: "quick", ch: "快的" }, { w: "quiet", ch: "安靜的" },
+            { w: "railway", ch: "鐵路" }, { w: "rainbow", ch: "彩虹" }, { w: "rat", ch: "大老鼠" },
+            { w: "real", ch: "真實的" }, { w: "repeat", ch: "重複" }, { w: "rest", ch: "休息" },
+            { w: "restaurant", ch: "餐廳" }, { w: "restroom", ch: "洗手間" }, { w: "rich", ch: "富有的" },
+            { w: "road", ch: "道路" }, { w: "roof", ch: "屋頂" }, { w: "sail", ch: "航行" },
+            { w: "sailor", ch: "水手" }, { w: "scarf", ch: "圍巾" }, { w: "seafood", ch: "海鮮" },
+            { w: "sentence", ch: "句子" }, { w: "shall", ch: "應該" }, { w: "share", ch: "分享" },
+            { w: "shopping", ch: "購物" }, { w: "shoppingmall", ch: "購物中心" }, { w: "should", ch: "應該" },
+            { w: "shy", ch: "害羞的" }, { w: "side", ch: "邊" }, { w: "sidewalk", ch: "人行道" },
+            { w: "simple", ch: "簡單的" }, { w: "sink", ch: "水槽" }, { w: "sky", ch: "天空" },
+            { w: "smart", ch: "聰明的" }, { w: "smoke", ch: "抽菸" }, { w: "so", ch: "所以" },
+            { w: "spell", ch: "拼字" }, { w: "spend", ch: "花費" }, { w: "square", ch: "正方形" },
+            { w: "stair", ch: "樓梯" }, { w: "star", ch: "星星" }, { w: "steal", ch: "偷竊" },
+            { w: "storm", ch: "暴風雨" }, { w: "strange", ch: "奇怪的" }, { w: "team", ch: "隊伍" },
+            { w: "teapot", ch: "茶壺" }, { w: "thanksgiving", ch: "感恩節" }, { w: "theater", ch: "劇院" },
+            { w: "throw", ch: "丟、投" }, { w: "till", ch: "直到...為止" }, { w: "tired", ch: "疲倦的" },
+            { w: "top", ch: "頂部" }, { w: "towel", ch: "毛巾" }, { w: "trashcan", ch: "垃圾桶" },
+            { w: "true", ch: "真實的" }, { w: "try", ch: "嘗試" }, { w: "typhoon", ch: "颱風" },
+            { w: "ugly", ch: "醜陋的" }, { w: "uniform", ch: "制服" }, { w: "until", ch: "直到...為止" },
+            { w: "up", ch: "向上" }, { w: "use", ch: "使用" }, { w: "vacation", ch: "假期" },
+            { w: "vest", ch: "背心" }, { w: "videogame", ch: "電子遊戲" }, { w: "waiter", ch: "服務生" },
+            { w: "waitress", ch: "女服務生" }, { w: "while", ch: "當...的時候" }, { w: "win", ch: "贏" },
+            { w: "wolf", ch: "狼" }
         ]
     };
 
-    const sentenceData = {
-        1: [
-            { w: "apple", s: "This is a red _____." },
-            { w: "banana", s: "The monkey loves to eat a yellow _____." },
-            { w: "cat", s: "My little _____ is sleeping on the bed." },
-            { w: "duck", s: "I can see a yellow _____ swimming in the lake." },
-            { w: "happy", s: "We are very _____ to play together today." },
-            { w: "bear", s: "The big brown _____ loves to eat honey." },
-            { w: "ball", s: "He plays with a red _____ in the park." },
-            { w: "bird", s: "Look at that beautiful _____ in the tree." },
-            { w: "book", s: "I like reading this interesting story _____." },
-            { w: "frog", s: "The little green _____ can jump very high." },
-            { w: "bag", s: "I put my English books in my school _____." },
-            { w: "boy", s: "The young _____ is running on the playground." },
-            { w: "dog", s: "My cute _____ is barking at the mailman." },
-            { w: "door", s: "Please close the _____ when you leave." },
-            { w: "egg", s: "I usually eat a fried _____ for breakfast." },
-            { w: "fish", s: "The gold _____ is swimming in the water." },
-            { w: "girl", s: "She is a kind _____ and helps everyone." },
-            { w: "home", s: "I love my family and my warm _____." },
-            { w: "orange", s: "An _____ is orange and very juicy." },
-            { w: "window", s: "Please open the _____ to get some fresh air." }
-        ],
-        2: [
-            { w: "beef", s: "We are having delicious _____ noodles for dinner." },
-            { w: "birthday", s: "Today is my sister's eighth _____ party." },
-            { w: "chocolate", s: "I love eating sweet _____ ice cream." },
-            { w: "hamburger", s: "He bought a big _____ with cheese." },
-            { w: "airplane", s: "We can see a white _____ in the blue sky." },
-            { w: "ant", s: "The little black _____ is carrying a big seed." },
-            { w: "baby", s: "The little _____ is crying loudly in the room." },
-            { w: "bee", s: "A busy _____ is collecting honey from flowers." },
-            { w: "brother", s: "My older _____ is very good at basketball." },
-            { w: "blackboard", s: "The teacher wrote some English words on the _____." },
-            { w: "carrot", s: "The rabbit loves eating fresh orange _____." },
-            { w: "classroom", s: "We have class in a bright _____." },
-            { w: "computer", s: "He is learning how to use a _____." },
-            { w: "milk", s: "Drinking a glass of hot _____ is good for you." },
-            { w: "onion", s: "Cutting an _____ makes me cry." },
-            { w: "potato", s: "We bought some sweet _____ from the market." },
-            { w: "robot", s: "This toy _____ can walk and talk." },
-            { w: "sandwich", s: "I made a ham and cheese _____ for lunch." },
-            { w: "strawberry", s: "My favorite fruit is sweet red _____." },
-            { w: "tomato", s: "The red _____ is used to make pizza sauce." }
-        ],
-        3: [
-            { w: "butterfly", s: "A beautiful _____ is flying around the garden." },
-            { w: "cabbage", s: "My grandmother grows green _____ in her farm." },
-            { w: "doctor", s: "The _____ checked my body when I was sick." },
-            { w: "firefighter", s: "The brave _____ came to put out the fire." },
-            { w: "spider", s: "A small _____ is spinning a web on the wall." },
-            { w: "balloon", s: "The red _____ flew high into the clouds." },
-            { w: "bathroom", s: "I always wash my hands in the _____." },
-            { w: "bedroom", s: "I sleep peacefully in my cozy _____." },
-            { w: "carpet", s: "Please do not spill juice on the new _____." },
-            { w: "drawer", s: "I found my keys inside the desk _____." },
-            { w: "homework", s: "Remember to finish your English _____ today." },
-            { w: "kitchen", s: "My mother is cooking dinner in the _____." },
-            { w: "nurse", s: "The kind _____ took care of me in the clinic." },
-            { w: "octopus", s: "An _____ has eight long arms and lives in the sea." },
-            { w: "raincoat", s: "You should wear a _____ on a rainy day." },
-            { w: "salad", s: "I eat a healthy vegetable _____ every day." },
-            { w: "shower", s: "I always take a hot _____ after exercising." },
-            { w: "sofa", s: "We sat on the comfortable _____ and watched TV." },
-            { w: "turtle", s: "The green _____ moves very slowly on the beach." },
-            { w: "wife", s: "She is my uncle's _____ and she is very nice." }
-        ],
-        4: [
-            { w: "crocodile", s: "A large _____ is resting near the river." },
-            { w: "bacon", s: "I love eating crispy _____ with my eggs." },
-            { w: "interesting", s: "This science book is very _____ and fun." },
-            { w: "supermarket", s: "We went to the _____ to buy fresh food." },
-            { w: "snowman", s: "The children built a cool _____ in winter." },
-            { w: "bank", s: "My parents go to the _____ to save money." },
-            { w: "barbecue", s: "We are having a family _____ in the yard." },
-            { w: "beach", s: "We played in the sand at the _____ yesterday." },
-            { w: "bookstore", s: "I want to buy some comic books from the _____." },
-            { w: "giraffe", s: "The _____ is very tall with a long neck." },
-            { w: "gorilla", s: "The big _____ is eating bananas in the forest." },
-            { w: "honey", s: "The golden _____ is sweet and made by bees." },
-            { w: "playground", s: "Students love to play on the slide in the _____." },
-            { w: "puppy", s: "My uncle bought a cute little _____ yesterday." },
-            { w: "river", s: "The water in this _____ flows to the ocean." },
-            { w: "scientist", s: "A clever _____ works in the laboratory." },
-            { w: "vegetable", s: "Eating green _____ is good for your body." },
-            { w: "village", s: "My grandparents live in a quiet mountain _____." },
-            { w: "wonderful", s: "We had a _____ time during our vacation." }
-        ],
-        5: [
-            { w: "apartment", s: "They live in a modern _____ in the city." },
-            { w: "bakery", s: "The bread in this local _____ smells delicious." },
-            { w: "typhoon", s: "A strong _____ is coming, so stay indoors." },
-            { w: "hospital", s: "They rushed the sick boy to the nearest _____." },
-            { w: "rainbow", s: "Look at the colorful _____ in the sky after the rain." },
-            { w: "bathtub", s: "I took a relaxing warm bath in the _____." },
-            { w: "beard", s: "The grandfather has a long white _____." },
-            { w: "beautiful", s: "She designed a very _____ dress for the party." },
-            { w: "bowling", s: "We go _____ with our friends on Saturdays." },
-            { w: "bridge", s: "The cars are crossing the long _____ over the river." },
-            { w: "company", s: "My father works for a large technology _____." },
-            { w: "couch", s: "I sat on the _____ and read my book." },
-            { w: "engineer", s: "The smart _____ is designing a new robot." },
-            { w: "expensive", s: "This watch is too _____ for me to buy." },
-            { w: "library", s: "You can find many useful books in the school _____." },
-            { w: "milkshake", s: "I ordered a sweet chocolate _____ at the restaurant." },
-            { w: "picnic", s: "We are having a _____ in the park under the tree." },
-            { w: "restaurant", s: "They had a delicious steak dinner at the _____." },
-            { w: "uniform", s: "All students must wear their school _____ on Monday." },
-            { w: "vacation", s: "We are planning a trip to Japan for our summer _____." }
-        ]
-    };
-
-    let currentGameMode = 'spelling'; // spelling (拼寫) / cloze (克漏字)
     let selectedLevel = 1;
     let gameWords = [];
     let currentIdx = 0;
     let score = 0;
     let wrongWords = [];
     let isTransitioning = false;
-    let currentQuestionErrors = 0; // 記錄單題答錯累計次數
     
-    let currentAnswerArray = []; // 小朋友目前填入的字母
-    let usedTileIds = [];        // 記錄哪些按鈕被使用了
+    let currentAnswerArray = [];
+    let usedTileIds = [];
 
     // 計時器變數
     let timerInterval = null;
-    let timeLeft = 300; // 5分鐘 = 300秒
+    let timeLeft = 300; // 5 分鐘計時
 
-    // 🏆 歷史學習記憶庫 (從瀏覽器 LocalStorage 讀取)
-    let playedHistory = JSON.parse(localStorage.getItem('style_spelling_played_history')) || [];
+    // 快取機制儲存鍵值
+    const STORAGE_KEY = 'spelling_game_history';
 
-    function selectMode(mode) {
-        currentGameMode = mode;
-        document.getElementById('btn-mode-spelling').classList.toggle('selected', mode === 'spelling');
-        document.getElementById('btn-mode-cloze').classList.toggle('selected', mode === 'cloze');
-        
-        // 更新說明
-        const subtitle = document.querySelector('.subtitle');
-        if (mode === 'spelling') {
-            subtitle.innerText = '聽聲音、看中文，拼出正確單字！';
-        } else {
-            subtitle.innerText = '聽英文句子，聽辨語音拼出空格中的單字！';
+    function getLearnedHistory() {
+        try {
+            const history = localStorage.getItem(STORAGE_KEY);
+            return history ? JSON.parse(history) : [];
+        } catch (e) {
+            return [];
         }
+    }
+
+    function saveLearnedHistory(word) {
+        try {
+            let history = getLearnedHistory();
+            if (!history.includes(word)) {
+                history.push(word);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            }
+        } catch (e) {}
+    }
+
+    function clearLearnedHistory() {
+        localStorage.removeItem(STORAGE_KEY);
     }
 
     function selectLevel(lvl) {
@@ -781,49 +839,40 @@
     }
 
     function startGame() {
-        // 1. 根據所選級別與遊玩模式，抽取全部單字庫或句子庫
+        // 1. 根據所選級別抽取單字庫
         let pool = [];
-        const sourceData = (currentGameMode === 'spelling') ? vocabData : sentenceData;
-
         for (let i = 1; i <= selectedLevel; i++) {
-            pool = pool.concat(sourceData[i]);
+            pool = pool.concat(vocabData[i]);
         }
 
-        // 2. 過濾掉近期已經拼寫過的項目，防止重複
-        let unplayed = pool.filter(item => !playedHistory.includes(item.w));
+        // 2. 獲取已學過單字歷史
+        let history = getLearnedHistory();
 
-        // 如果未玩過的單字少於 15 個，代表這個級別幾乎學完囉！我們清空該級別的歷史，重新循環
-        if (unplayed.length < 15) {
-            const poolWordList = pool.map(item => item.w);
-            playedHistory = playedHistory.filter(w => !poolWordList.includes(w));
-            localStorage.setItem('style_spelling_played_history', JSON.stringify(playedHistory));
-            unplayed = pool;
+        // 3. 過濾出沒學過的單字
+        let unlearnedPool = pool.filter(item => !history.includes(item.w.toLowerCase()));
+
+        // 如果全部單字都學過一輪了，自動重置快取並重頭來過
+        if (unlearnedPool.length === 0) {
+            clearLearnedHistory();
+            unlearnedPool = pool;
         }
 
-        // 3. Fisher-Yates 隨機洗牌 unplayed 池
-        for (let i = unplayed.length - 1; i > 0; i--) {
+        // 4. Fisher-Yates 隨機洗牌
+        for (let i = unlearnedPool.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [unplayed[i], unplayed[j]] = [unplayed[j], unplayed[i]];
+            [unlearnedPool[i], unlearnedPool[j]] = [unlearnedPool[j], unlearnedPool[i]];
         }
 
-        // 4. 固定抽取 15 題全新單字
-        const totalQuestions = Math.min(15, unplayed.length);
-        gameWords = unplayed.slice(0, totalQuestions);
-
-        // 5. 將本次抽取的所有單字，寫入已玩過的歷史記憶
-        gameWords.forEach(item => {
-            if (!playedHistory.includes(item.w)) {
-                playedHistory.push(item.w);
-            }
-        });
-        localStorage.setItem('style_spelling_played_history', JSON.stringify(playedHistory));
+        // 5. 每次固定抽選 15 題
+        const totalQuestions = Math.min(15, unlearnedPool.length);
+        gameWords = unlearnedPool.slice(0, totalQuestions);
 
         currentIdx = 0;
         score = 0;
         wrongWords = [];
         isTransitioning = false;
 
-        // 6. 初始化並啟動計時器 (5 分鐘)
+        // 6. 啟動 5 分鐘計時器
         initTimer(300);
         
         switchScreen('screen-game');
@@ -843,14 +892,14 @@
             updateTimerDisplay();
 
             if (timeLeft === 30) {
-                // 剩最後 30 秒，進入急迫狀態（紅底並微顫動）
+                // 剩最後 30 秒進入警示狀態
                 timerBox.classList.add('timer-urgent');
                 speakWarning();
             }
 
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
-                endGame(true); // 傳入 true 表示時間結束
+                endGame(true); // 時間終止
             }
         }, 1000);
     }
@@ -878,42 +927,21 @@
         }
 
         isTransitioning = false;
-        currentQuestionErrors = 0; // 每一題載入時重置錯誤次數
-        const currentItem = gameWords[currentIdx];
-        const currentWord = currentItem.w.toLowerCase();
+        const currentWord = gameWords[currentIdx].w.toLowerCase();
         
         document.getElementById('question-number').innerText = `第 ${currentIdx + 1} / ${gameWords.length} 題`;
         document.getElementById('current-score').innerText = `得分: ${score}`;
         document.getElementById('progress').style.width = `${(currentIdx / gameWords.length) * 100}%`;
+        document.getElementById('chinese-prompt').innerText = gameWords[currentIdx].ch;
         document.getElementById('feedback').innerText = '';
-
-        // 根據不同模式，調整提示語氣與顯示樣式
-        const promptBox = document.getElementById('prompt-box');
-        const btnSentence = document.getElementById('btn-repeat-sentence');
-
-        if (currentGameMode === 'spelling') {
-            // 看中文拼字模式
-            promptBox.className = "prompt-box prompt-spelling";
-            promptBox.innerText = currentItem.ch;
-            btnSentence.style.display = "none"; // 不需要聽整句按鈕
-        } else {
-            // 聽力克漏字模式
-            promptBox.className = "prompt-box prompt-cloze";
-            promptBox.innerText = currentItem.s; // 顯示英文挖空句子 (如: "This is a red _____.")
-            btnSentence.style.display = "inline-block"; // 顯示聽整句按鈕
-        }
 
         currentAnswerArray = new Array(currentWord.length).fill('');
         usedTileIds = [];
 
         renderSlots();
 
-        // 題目一出現即播放語音
-        if (currentGameMode === 'spelling') {
-            speakWord(currentWord);
-        } else {
-            speakSentence(currentItem.s, currentItem.w);
-        }
+        // 題目一出現立馬發音 (TTS)
+        speakWord(currentWord);
 
         // 準備混淆字母
         let letters = currentWord.split('');
@@ -980,13 +1008,6 @@
         renderSlots();
     }
 
-    function repeatCurrentSentenceAudio() {
-        if (currentGameMode === 'cloze') {
-            const currentItem = gameWords[currentIdx];
-            speakSentence(currentItem.s, currentItem.w);
-        }
-    }
-
     function repeatCurrentWordAudio() {
         const targetWord = gameWords[currentIdx].w.toLowerCase();
         speakWord(targetWord);
@@ -1002,6 +1023,9 @@
             feedback.innerHTML = '<span class="text-success">🎉 太棒了！全對了！</span>';
             score += Math.round(100 / gameWords.length);
             
+            // 將單字寫入學習歷史快取，下次開始測驗時不會優先抽到
+            saveLearnedHistory(targetWord);
+
             speakWord(targetWord);
             
             setTimeout(() => {
@@ -1009,27 +1033,9 @@
                 loadQuestion();
             }, 1500);
         } else {
-            currentQuestionErrors++;
+            feedback.innerHTML = '<span class="text-danger">❌ 喔喔，字母順序不對唷，再試一次！</span>';
             if (!wrongWords.includes(gameWords[currentIdx])) {
                 wrongWords.push(gameWords[currentIdx]);
-            }
-
-            if (currentQuestionErrors >= 3) {
-                // 單題錯滿 3 次，播放正確發音，並在 2 秒後結束挑戰
-                feedback.innerHTML = '<span class="text-danger">❌ 同一單字累積答錯 3 次，挑戰結束！</span>';
-                isTransitioning = true;
-                speakWord(targetWord); // 讓孩子在結束前聽一次正確讀音
-                setTimeout(() => {
-                    endGame(false, true); // 傳入 (isTimeUp=false, isMaxErrors=true)
-                }, 2000);
-            } else {
-                feedback.innerHTML = `<span class="text-danger">❌ 喔喔，字母順序不對唷！剩餘 ${3 - currentQuestionErrors} 次挑戰機會。</span>`;
-                // 自動幫小朋友清空該題格子，便於重新輸入
-                setTimeout(() => {
-                    if (currentQuestionErrors < 3 && !isTransitioning) {
-                        clearAnswer();
-                    }
-                }, 1200);
             }
         }
     }
@@ -1039,24 +1045,12 @@
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(word);
             utterance.lang = 'en-US';
-            utterance.rate = 0.65; // 調慢語速 (原 0.8)，幫助孩子聽懂發音
+            utterance.rate = 0.8; 
             window.speechSynthesis.speak(utterance);
         }
     }
 
-    function speakSentence(sentenceTemplate, wordToFill) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            // 將句子中底線 `_____` 替換為實際單字進行順暢朗讀
-            const completeSentence = sentenceTemplate.replace("_____", wordToFill);
-            const utterance = new SpeechSynthesisUtterance(completeSentence);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.70; // 調慢句子速度 (原 0.85)，使聽力句子更清晰
-            window.speechSynthesis.speak(utterance);
-        }
-    }
-
-    function endGame(isTimeUp = false, isMaxErrors = false) {
+    function endGame(isTimeUp = false) {
         clearInterval(timerInterval);
         document.getElementById('progress').style.width = '100%';
         switchScreen('screen-result');
@@ -1069,17 +1063,17 @@
 
         if (isTimeUp) {
             resultTitle.innerText = "時間到囉！⏳";
-            resultMessage.innerText = "別灰心！多練習幾次，拼字與聽力速度就會變快喔！";
-            // 移除原本自動將「未作答單字」放入錯題本的迴圈，只保留遊玩中實際答錯的單字
-        } else if (isMaxErrors) {
-            resultTitle.innerText = "練習結束 💔";
-            resultMessage.innerText = "單題累積答錯達 3 次。沒關係，我們一起來看看正確拼法！💪";
-            // 移除原本自動將「未作答單字」放入錯題本的迴圈，只保留遊玩中實際答錯的單字
+            resultMessage.innerText = "別灰心！多練習幾次，拼字速度就會變快喔！";
+            for (let i = currentIdx; i < gameWords.length; i++) {
+                if (!wrongWords.includes(gameWords[i])) {
+                    wrongWords.push(gameWords[i]);
+                }
+            }
         } else {
             resultTitle.innerText = "挑戰成功 🎉";
             let msg = "再練習看看，你一定會越來越厲害！👍";
-            if (score === 100) msg = "太厲害了！你是英語聽力拼字小專家！ 🌟";
-            else if (score >= 70) msg = "很棒喔！單字與句子結構都聽得很清楚！ ❤️";
+            if (score === 100) msg = "太厲害了！你是英文字母小天才！ 🌟";
+            else if (score >= 70) msg = "很棒喔！單字記得真清楚！ ❤️";
             resultMessage.innerText = msg;
         }
 
@@ -1089,20 +1083,13 @@
             reviewSection.style.display = 'block';
             reviewList.innerHTML = '';
             wrongWords.forEach(item => {
-                if (currentGameMode === 'spelling') {
-                    reviewList.innerHTML += `<div style="padding:10px 0; border-bottom:1px solid #ddd; text-align: left;">💡 <strong>${item.ch}</strong> 的正確拼法是：<span style="color:#2980B9; font-weight:bold; text-transform:uppercase;">${item.w}</span></div>`;
-                } else {
-                    // 克漏字模式：顯示完整句子方便家長與孩子複習上下文語境
-                    const completeSentenceReview = item.s.replace("_____", `<span style="color:#2ECC71; font-weight:bold; text-transform:uppercase; text-decoration: underline;">${item.w}</span>`);
-                    reviewList.innerHTML += `<div style="padding:10px 0; border-bottom:1px solid #ddd; text-align: left; line-height: 1.5;">📖 聽力克漏字句型：<br>${completeSentenceReview}</div>`;
-                }
+                reviewList.innerHTML += `<div style="padding:5px 0; border-bottom:1px solid #ddd;">💡 <strong>${item.ch}</strong> 的正確拼法是：<span style="color:#2980B9; font-weight:bold; text-transform:uppercase;">${item.w}</span></div>`;
             });
         } else {
             reviewSection.style.display = 'none';
         }
     }
 
-    // 回首頁確認與邏輯
     function confirmReturnToMenu() {
         document.getElementById('confirm-dialog').style.display = 'flex';
     }
